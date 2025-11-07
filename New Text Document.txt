@@ -1,0 +1,28 @@
+import frappe
+import pandas as pd
+
+class GoogleSheetConnection:
+    def __init__(self, url, sheet_name=None, api_key=None):
+        self.url = url
+        self.sheet_name = sheet_name or "Sheet1"
+        self.api_key = api_key
+
+    def list_tables(self):
+        return [self.sheet_name]
+
+    def get_table(self, table_name):
+        return pd.read_csv(self.url)
+
+def get_google_sheet_connection(data_source_doc):
+    config = data_source_doc.config or {}
+
+    # 👉 Hỗ trợ cả 2 kiểu: config JSON hoặc field trực tiếp
+    url = config.get("url") or config.get("sheet_url") or getattr(data_source_doc, "sheet_url", None)
+    sheet_name = config.get("sheet_name") or getattr(data_source_doc, "sheet_name", "Sheet1")
+    api_key = config.get("api_key") or getattr(data_source_doc, "api_key", None)
+
+    if not url:
+        frappe.throw("Thiếu URL Google Sheet trong config hoặc trường 'sheet_url'.")
+
+    frappe.logger().info(f"✅ Connected to Google Sheet: {url} / Sheet: {sheet_name}")
+    return GoogleSheetConnection(url, sheet_name, api_key)
