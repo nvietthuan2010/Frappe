@@ -1,0 +1,6 @@
+[submodule "insights"]
+	path = insights
+	url = https://github.com/nvietthuan2010/Frappe
+[submodule "insight_gsheet_connector"]
+	path = insight_gsheet_connector
+	url = https://github.com/nvietthuan2010/Frappe
